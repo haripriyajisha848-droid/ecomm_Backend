@@ -1,0 +1,29 @@
+services:
+
+  backend:
+    build:
+      context: ./ecommapp
+      dockerfile: Dockerfile
+    container_name: ecomm-backend
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=host.docker.internal
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=ecommdb
+      - JWT_SECRET=ecomm_super_secret_key_minimum_256_bits_long_for_hs256
+      - JWT_EXPIRATION=86400000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ecomm-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
